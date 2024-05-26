@@ -105,6 +105,7 @@ export default class Level {
 
 		// Render objects
 		this.objects.forEach((obj) => obj.render(context));
+		this.objects = this.objects.filter(obj => !obj.marked_for_deletion);
 
 		// Render player
 		this.player.render(context);

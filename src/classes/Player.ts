@@ -1,24 +1,24 @@
 import Sprite from "../primitives/Sprite";
 import Controller from "./Controller";
-import { player_animations } from "../config/animations";
-import { game_variables } from "../config/settings";
 import Block from "../primitives/Block";
 import Camera from "./Camera";
 import Box from "../objects/Box";
+import { player_animations } from "../config/animations";
+import { game_variables } from "../config/settings";
 
 
 export default class Player {
-	position: { x: number; y: number; };
+	position: { x: number; y: number };
 	width: number;
 	height: number;
-	velocity: { x: number; y: number; };
+	velocity: { x: number; y: number };
 	speed: number;
 	attacking: boolean;
 	jumping: boolean;
 	falling: boolean;
 	jumps: number;
 	sprite: Sprite;
-	hitbox: { position: { x: number; y: number; }; width: number; height: number; };
+	hitbox: { position: { x: number; y: number }; width: number; height: number };
 	collision_blocks: Block[];
 	boxes: Box[];
 	animations: any;
@@ -26,8 +26,14 @@ export default class Player {
 	controller: Controller;
 	current_animation: any;
 	camera: Camera;
+	hit_radius_scale: number;
+	hit_radius: { position: { x: number; y: number; }; width: number; height: number; };
 
-	constructor({ position = { x: 0, y: 0 }, state = "idle_right", boxes=[] } = {}) {
+	constructor({
+		position = { x: 0, y: 0 },
+		state = "idle_right",
+		boxes = [],
+	} = {}) {
 		this.position = position;
 		this.width = 78;
 		this.height = 58;
@@ -50,6 +56,15 @@ export default class Player {
 			width: this.width,
 			height: this.height,
 		};
+
+		this.hit_radius_scale = 2;
+
+		this.hit_radius = {
+			position: {x: this.position.x + (0.5 * this.width), y: this.position.y + (0.5 * this.height)},
+			width: this.width * this.hit_radius_scale,
+			height: this.height
+		}
+
 		this.collision_blocks = [];
 		this.boxes = boxes;
 
@@ -72,7 +87,12 @@ export default class Player {
 	switch_state(state: string) {
 		if (this.sprite.image == this.animations[state].image) return;
 		this.state = state;
-		this.sprite.current_frame = 0;
+
+		if (state.includes('right')) {
+			this.sprite.current_frame = 0;
+		} else {
+			this.sprite.current_frame = this.animations[state].frame_rate - 1;
+		}
 		this.sprite.image = this.animations[state].image;
 		this.sprite.frame_rate = this.animations[state].frame_rate;
 		this.sprite.frame_buffer = this.animations[state].frame_buffer;
@@ -124,7 +144,6 @@ export default class Player {
 	}
 
 	handle_horizontal_collision() {
-
 		// Collision blocks
 		for (let i = 0; i < this.collision_blocks.length; i++) {
 			const block: Block = this.collision_blocks[i];
@@ -181,7 +200,6 @@ export default class Player {
 	}
 
 	handle_vertical_collision() {
-
 		// Collision blocks
 		for (let i = 0; i < this.collision_blocks.length; i++) {
 			const block: Block = this.collision_blocks[i];
@@ -249,6 +267,27 @@ export default class Player {
 		}
 	}
 
+	handle_object_interaction() {
+		for (let i = 0; i < this.boxes.length; i++) {
+			const box: Box = this.boxes[i];
+
+			if (this.attacking) {
+				// Check if box is in the hit radius
+				if (
+					this.hit_radius.position.x <= box.position.x + box.width &&
+					this.hit_radius.position.x + this.hit_radius.width >= box.position.x &&
+					this.hit_radius.position.y + this.hit_radius.height >= box.position.y &&
+					this.hit_radius.position.y <= box.position.y + box.height
+				) {
+					console.log(box);
+					box.marked_for_deletion = true;
+				}
+			}
+		}
+
+		this.boxes = this.boxes.filter(box => !box.marked_for_deletion);
+	}
+
 	attack() {
 		if (!this.attacking) this.attacking = true;
 	}
@@ -258,6 +297,17 @@ export default class Player {
 			position: { x: this.position.x + 15, y: this.position.y + 15 },
 			width: 30,
 			height: 30,
+		};
+	}
+
+	update_hit_radius() {
+		this.hit_radius = {
+			position: {
+				x: this.position.x - 7.5,
+				y: this.position.y,
+			},
+			width: this.width,
+			height: this.height,
 		};
 	}
 
@@ -291,9 +341,15 @@ export default class Player {
 				this.sprite.anim_complete = false;
 			}
 		}
+
+		this.update_hit_radius();
+		this.handle_object_interaction();
 	}
 
-	draw_hitbox(context: CanvasRenderingContext2D, { fill = "rgba(255, 0, 0, 0.5)" } = {}) {
+	draw_hitbox(
+		context: CanvasRenderingContext2D,
+		{ fill = "rgba(255, 0, 0, 0.5)" } = {}
+	) {
 		context.fillStyle = fill;
 		context.fillRect(
 			this.hitbox.position.x,
@@ -303,7 +359,15 @@ export default class Player {
 		);
 	}
 
-	draw(context: CanvasRenderingContext2D, { fill='transparent', outline='transparent' }) {
+	draw_hit_radius(context: CanvasRenderingContext2D) {
+		context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+		context.fillRect(this.hit_radius.position.x, this.hit_radius.position.y, this.hit_radius.width, this.hit_radius.height);
+	}
+
+	draw(
+		context: CanvasRenderingContext2D,
+		{ fill = "transparent", outline = "transparent" }
+	) {
 		context.fillStyle = fill;
 		context.strokeStyle = outline;
 		context.fillRect(this.position.x, this.position.y, this.width, this.height);
@@ -316,9 +380,13 @@ export default class Player {
 
 		this.sprite.draw(context);
 		//this.draw_hitbox(context);
+		this.draw_hit_radius(context);
 	}
 
-	render(context: CanvasRenderingContext2D, { fill = "transparent", outline = "transparent" } = {}) {
+	render(
+		context: CanvasRenderingContext2D,
+		{ fill = "transparent", outline = "transparent" } = {}
+	) {
 		this.update();
 		this.draw(context, { fill, outline });
 		this.camera.update();

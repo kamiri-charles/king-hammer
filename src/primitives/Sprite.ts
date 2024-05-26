@@ -40,12 +40,23 @@ export default class Sprite {
 		this.position.y = y;
 		this.frame_counter++;
 
-		if (this.current_frame >= this.frame_rate - 1) {
-			if (this.loop) this.current_frame = 0;
-			else this.anim_complete = true;
+		if (this.dir_state == 'right') {
+			if (this.current_frame >= this.frame_rate - 1) {
+				if (this.loop) this.current_frame = 0;
+				else this.anim_complete = true;
+			} else {
+				if (this.frame_counter % this.frame_buffer == 0) {
+					this.current_frame++;
+				}
+			}
 		} else {
-			if (this.frame_counter % this.frame_buffer == 0) {
-				this.current_frame++;
+			if (this.current_frame <= 0) {
+				if (this.loop) this.current_frame = this.frame_rate - 1;
+				else this.anim_complete = true;
+			} else {
+				if (this.frame_counter % this.frame_buffer == 0) {
+					this.current_frame--;
+				}
 			}
 		}
 	}

@@ -5,6 +5,7 @@ export default class GameObject {
     type: string;
     width: number;
     height: number;
+    marked_for_deletion: boolean;
 
     constructor({position = {x: 0, y: 0}, image_src = '', type = ''} = {}) {
         this.position = position;
@@ -15,6 +16,7 @@ export default class GameObject {
         this.type = type;
         this.width = this.obj_image.width;
         this.height = this.obj_image.height;
+        this.marked_for_deletion = false;
     }
 
     draw(context: CanvasRenderingContext2D) {

@@ -37,7 +37,7 @@ export default class Controller {
 					break;
 
 				case "j":
-					this.player.attack();
+					this.player.attack();					
 					break;
 			}
 		});
