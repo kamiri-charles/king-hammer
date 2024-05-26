@@ -4,6 +4,7 @@ import { player_animations } from "../config/animations";
 import { game_variables } from "../config/settings";
 import Block from "../primitives/Block";
 import Camera from "./Camera";
+import Box from "../objects/Box";
 
 
 export default class Player {
@@ -19,13 +20,14 @@ export default class Player {
 	sprite: Sprite;
 	hitbox: { position: { x: number; y: number; }; width: number; height: number; };
 	collision_blocks: Block[];
+	boxes: Box[];
 	animations: any;
 	state: string;
 	controller: Controller;
 	current_animation: any;
 	camera: Camera;
 
-	constructor({ position = { x: 0, y: 0 }, state = "idle_right" } = {}) {
+	constructor({ position = { x: 0, y: 0 }, state = "idle_right", boxes=[] } = {}) {
 		this.position = position;
 		this.width = 78;
 		this.height = 58;
@@ -49,6 +51,7 @@ export default class Player {
 			height: this.height,
 		};
 		this.collision_blocks = [];
+		this.boxes = boxes;
 
 		this.animations = player_animations;
 		this.init_animations();
@@ -121,6 +124,8 @@ export default class Player {
 	}
 
 	handle_horizontal_collision() {
+
+		// Collision blocks
 		for (let i = 0; i < this.collision_blocks.length; i++) {
 			const block: Block = this.collision_blocks[i];
 
@@ -146,9 +151,38 @@ export default class Player {
 				}
 			}
 		}
+
+		// Boxes collision
+		for (let i = 0; i < this.boxes.length; i++) {
+			const box: Box = this.boxes[i];
+
+			if (
+				this.hitbox.position.x <= box.position.x + box.width &&
+				this.hitbox.position.x + this.hitbox.width >= box.position.x &&
+				this.hitbox.position.y + this.hitbox.height >= box.position.y &&
+				this.hitbox.position.y <= box.position.y + box.height
+			) {
+				if (this.velocity.x < 0) {
+					// Moving to the left
+					const offset = this.hitbox.position.x - this.position.x;
+					this.position.x = box.position.x + box.width - offset + 0.01;
+					break;
+				}
+
+				if (this.velocity.x > 0) {
+					// Moving to the right
+					const offset =
+						this.hitbox.position.x - this.position.x + this.hitbox.width;
+					this.position.x = box.position.x - offset - 0.01;
+					break;
+				}
+			}
+		}
 	}
 
 	handle_vertical_collision() {
+
+		// Collision blocks
 		for (let i = 0; i < this.collision_blocks.length; i++) {
 			const block: Block = this.collision_blocks[i];
 
@@ -174,6 +208,39 @@ export default class Player {
 						this.hitbox.position.y - this.position.y + this.hitbox.height;
 					this.jumps = 0;
 					this.position.y = block.position.y - offset - 0.01;
+					this.jumping = false;
+					this.falling = false;
+					break;
+				}
+			}
+		}
+
+		// Boxes
+		for (let i = 0; i < this.boxes.length; i++) {
+			const box: Box = this.boxes[i];
+
+			if (
+				this.hitbox.position.x <= box.position.x + box.width &&
+				this.hitbox.position.x + this.hitbox.width >= box.position.x &&
+				this.hitbox.position.y + this.hitbox.height >= box.position.y &&
+				this.hitbox.position.y <= box.position.y + box.height
+			) {
+				if (this.velocity.y < 0) {
+					// Moving upwards
+					this.velocity.y = 0;
+					const offset = this.hitbox.position.y - this.position.y;
+					this.position.y = box.position.y + box.height - offset + 0.01;
+					this.jumping = false;
+					break;
+				}
+
+				if (this.velocity.y > 0) {
+					// Moving downwards
+					this.velocity.y = 0;
+					const offset =
+						this.hitbox.position.y - this.position.y + this.hitbox.height;
+					this.jumps = 0;
+					this.position.y = box.position.y - offset - 0.01;
 					this.jumping = false;
 					this.falling = false;
 					break;

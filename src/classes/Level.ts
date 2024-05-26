@@ -1,10 +1,11 @@
 import Player from "./Player";
 import Block from "../primitives/Block";
+import GameObject from "../primitives/GameObject";
+import Box from "../objects/Box";
+import Door from "../objects/Door";
 import { parse2D } from "../config/utils";
 import { game_variables } from "../config/settings";
 import { levels } from "../config/levels";
-import Box from "../objects/Box";
-import GameObject from "../primitives/GameObject";
 
 export default class Level {
 	level_number: number;
@@ -20,13 +21,11 @@ export default class Level {
 		this.background = new Image();
 		this.background.src = `assets/backgrounds/BackgroundLevel${level_number}.png`;
 
-	
 		this.backgroundLoaded = new Promise<void>((resolve, reject) => {
 			this.background.onload = () => resolve();
 			this.background.onerror = () =>
 				reject(new Error("Failed to load background image"));
 		});
-		
 
 		this.collision_blocks_data2D = parse2D(
 			levels[level_number].collision_blocks
@@ -37,7 +36,6 @@ export default class Level {
 		this.player = new Player();
 
 		this.init();
-
 	}
 
 	init() {
@@ -60,24 +58,37 @@ export default class Level {
 		}
 
 		// Generate game objects
-		levels[this.level_number].objects_data.forEach(obj => {
-			if (obj.type == 'box') {
-				this.objects.push(new Box({position: {x: obj.x, y: (obj.y - obj.height)}}));
+		levels[this.level_number].objects_data.forEach((obj) => {
+			if (obj.type == "box") {
+				this.objects.push(
+					new Box({ position: { x: obj.x, y: obj.y - obj.height } })
+				);
 			}
-		})		
+
+			if (obj.type == "door") {
+				this.objects.push(
+					new Door({ position: { x: obj.x, y: obj.y - obj.height } })
+				);
+			}
+		});
 
 		// Player init
 		this.player.position = levels[this.level_number].player_position;
 		this.player.collision_blocks = this.collision_blocks;
+		this.player.boxes = this.objects.filter(obj => obj.type == 'box');
+
+		
 	}
 
 	async load(context: CanvasRenderingContext2D) {
 		await this.backgroundLoaded; // Wait for the background image to load
 
-
 		context.save();
 		context.scale(this.player.camera.scale, this.player.camera.scale);
-		context.translate(-this.player.camera.position.x, -this.player.camera.position.y);
+		context.translate(
+			-this.player.camera.position.x,
+			-this.player.camera.position.y
+		);
 
 		// Render background
 		context.drawImage(
@@ -93,7 +104,7 @@ export default class Level {
 		);
 
 		// Render objects
-		this.objects.forEach(obj => obj.render(context));
+		this.objects.forEach((obj) => obj.render(context));
 
 		// Render player
 		this.player.render(context);
