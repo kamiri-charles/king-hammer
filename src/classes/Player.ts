@@ -3,6 +3,7 @@ import Controller from "./Controller";
 import { player_animations } from "../config/animations";
 import { game_variables } from "../config/settings";
 import Block from "../primitives/Block";
+import Camera from "./Camera";
 
 
 export default class Player {
@@ -22,6 +23,7 @@ export default class Player {
 	state: string;
 	controller: Controller;
 	current_animation: any;
+	camera: Camera;
 
 	constructor({ position = { x: 0, y: 0 }, state = "idle_right" } = {}) {
 		this.position = position;
@@ -53,6 +55,7 @@ export default class Player {
 		this.state = state;
 
 		this.controller = new Controller(this);
+		this.camera = new Camera(this);
 	}
 
 	init_animations() {
@@ -251,5 +254,6 @@ export default class Player {
 	render(context: CanvasRenderingContext2D, { fill = "transparent", outline = "transparent" } = {}) {
 		this.update();
 		this.draw(context, { fill, outline });
+		this.camera.update();
 	}
 }

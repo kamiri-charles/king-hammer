@@ -4,5 +4,5 @@ export const game_variables = {
 	BLOCK_SIZE: 32,
 	GRAVITY: 1,
 	JUMP_HEIGHT: 10,
-	MAX_JUMPS: 3,
+	MAX_JUMPS: 1,
 };

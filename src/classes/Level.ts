@@ -63,7 +63,10 @@ export default class Level {
 	async load(context: CanvasRenderingContext2D) {
 		await this.backgroundLoaded; // Wait for the background image to load
 
+
 		context.save();
+		context.scale(this.player.camera.scale, this.player.camera.scale);
+		context.translate(-this.player.camera.position.x, -this.player.camera.position.y);
 		context.drawImage(
 			this.background,
 			0,
@@ -75,7 +78,8 @@ export default class Level {
 			game_variables.GAME_WIDTH,
 			game_variables.GAME_HEIGHT
 		);
-		context.restore();
+
 		this.player.render(context);
+		context.restore();
 	}
 }
