@@ -3,12 +3,15 @@ import Block from "../primitives/Block";
 import { parse2D } from "../config/utils";
 import { game_variables } from "../config/settings";
 import { levels } from "../config/levels";
+import Box from "../objects/Box";
+import GameObject from "../primitives/GameObject";
 
 export default class Level {
 	level_number: number;
 	background: HTMLImageElement;
 	collision_blocks_data2D: any;
 	collision_blocks: Block[];
+	objects: GameObject[];
 	player: Player;
 	backgroundLoaded: Promise<void>;
 
@@ -29,6 +32,7 @@ export default class Level {
 			levels[level_number].collision_blocks
 		);
 		this.collision_blocks = [];
+		this.objects = [];
 
 		this.player = new Player();
 
@@ -55,6 +59,13 @@ export default class Level {
 			});
 		}
 
+		// Generate game objects
+		levels[this.level_number].objects_data.forEach(obj => {
+			if (obj.type == 'box') {
+				this.objects.push(new Box({position: {x: obj.x, y: (obj.y - obj.height)}}));
+			}
+		})		
+
 		// Player init
 		this.player.position = levels[this.level_number].player_position;
 		this.player.collision_blocks = this.collision_blocks;
@@ -67,6 +78,8 @@ export default class Level {
 		context.save();
 		context.scale(this.player.camera.scale, this.player.camera.scale);
 		context.translate(-this.player.camera.position.x, -this.player.camera.position.y);
+
+		// Render background
 		context.drawImage(
 			this.background,
 			0,
@@ -79,6 +92,10 @@ export default class Level {
 			game_variables.GAME_HEIGHT
 		);
 
+		// Render objects
+		this.objects.forEach(obj => obj.render(context));
+
+		// Render player
 		this.player.render(context);
 		context.restore();
 	}

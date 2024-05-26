@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 	const game = new Game();
-	
 
 	const animate = () => {
 		ctx.fillStyle = 'black';

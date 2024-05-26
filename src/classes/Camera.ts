@@ -29,21 +29,6 @@ export default class Camera {
             this.position.x += offset; 
         }
 
-        if (this.player.position.y + this.player.height > this.position.y + this.height) {
-            let offset = (this.player.position.y + this.player.height) - (this.position.y + this.height);
-            this.position.y += offset + 500;
-        }
-
-        if (this.player.position.y < this.position.y) {
-            let offset = this.player.position.y - this.position.y;
-            this.position.y += offset;
-        }
-
-        
-    }
-
-    render(context: CanvasRenderingContext2D) {
-        context.fillStyle = 'rgba(0, 0, 255, 0.5)';
-        context.fillRect(this.position.x, this.position.y, this.width, this.height);
+        this.position.y = this.player.position.y - (0.5 * this.player.height) - (0.5 * this.height);
     }
 }

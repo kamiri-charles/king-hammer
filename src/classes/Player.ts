@@ -30,7 +30,7 @@ export default class Player {
 		this.width = 78;
 		this.height = 58;
 		this.velocity = { x: 0, y: 0 };
-		this.speed = 2;
+		this.speed = 4;
 		this.attacking = false;
 		this.jumping = false;
 		this.falling = false;
