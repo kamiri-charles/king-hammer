@@ -1,10 +1,10 @@
-import Sprite from "../primitives/Sprite";
-import Controller from "./Controller";
-import Block from "../primitives/Block";
-import Camera from "./Camera";
-import Box from "../objects/Box";
-import { player_animations } from "../config/animations";
 import { game_variables } from "../config/settings";
+import { player_animations } from "../config/animations";
+import Sprite from "../primitives/Sprite";
+import Block from "../primitives/Block";
+import Controller from "./Controller";
+import Box from "../objects/Box";
+import Camera from "./Camera";
 
 
 export default class Player {
@@ -279,8 +279,8 @@ export default class Player {
 					this.hit_radius.position.y + this.hit_radius.height >= box.position.y &&
 					this.hit_radius.position.y <= box.position.y + box.height
 				) {
-					console.log(box);
-					box.marked_for_deletion = true;
+					box.hp -= 1;
+					if (box.hp <= 0) box.marked_for_deletion = true;
 				}
 			}
 		}

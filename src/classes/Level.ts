@@ -1,12 +1,12 @@
-import Player from "./Player";
-import Block from "../primitives/Block";
-import GameObject from "../primitives/GameObject";
-import Box from "../objects/Box";
-import Door from "../objects/Door";
-import { parse2D } from "../config/utils";
 import { game_variables } from "../config/settings";
 import { levels } from "../config/levels";
+import { parse2D } from "../config/utils";
+import GameObject from "../primitives/GameObject";
 import BoxExplosion from "../effects/BoxExplosion";
+import Block from "../primitives/Block";
+import Door from "../objects/Door";
+import Box from "../objects/Box";
+import Player from "./Player";
 
 export default class Level {
 	level_number: number;
@@ -14,9 +14,9 @@ export default class Level {
 	collision_blocks_data2D: any;
 	collision_blocks: Block[];
 	objects: GameObject[];
+	effects: BoxExplosion[];
 	player: Player;
 	backgroundLoaded: Promise<void>;
-	xp: BoxExplosion;
 
 	constructor({ level_number = 1 } = {}) {
 		this.level_number = level_number;
@@ -34,9 +34,9 @@ export default class Level {
 		);
 		this.collision_blocks = [];
 		this.objects = [];
+		this.effects = [];
 
 		this.player = new Player();
-		this.xp = new BoxExplosion({ position: { x: 300, y: 400 } });
 
 		this.init();
 	}
@@ -110,9 +110,22 @@ export default class Level {
 
 		// Render objects
 		this.objects.forEach((obj) => obj.render(context));
-		this.objects = this.objects.filter(obj => !obj.marked_for_deletion);
+		//this.objects = this.objects.filter(obj => !obj.marked_for_deletion);
 
-		this.xp.render(context);
+		// If a box has been destroyed, create an explosion effect and remove the box
+		this.objects.forEach((obj) => {
+			if (obj.type == 'box' && obj.marked_for_deletion) {
+				this.effects.push(new BoxExplosion({ position: obj.position, collision_blocks: this.collision_blocks }));
+			}
+
+			if (obj.marked_for_deletion) {
+				this.objects = this.objects.filter(o => o != obj);
+			}
+		});
+
+		// Render effects
+		this.effects.forEach((effect) => effect.render(context));
+		this.effects = this.effects.filter((e) => !e.marked_for_deletion);
 
 		// Render player
 		this.player.render(context);
