@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const game = new Game();
 
+	
+
+
 	const animate = () => {
 		ctx.fillStyle = 'black';
 		ctx.fillRect(0, 0, canvas.width, canvas.height);

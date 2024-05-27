@@ -6,6 +6,7 @@ import Door from "../objects/Door";
 import { parse2D } from "../config/utils";
 import { game_variables } from "../config/settings";
 import { levels } from "../config/levels";
+import BoxExplosion from "../effects/BoxExplosion";
 
 export default class Level {
 	level_number: number;
@@ -15,6 +16,7 @@ export default class Level {
 	objects: GameObject[];
 	player: Player;
 	backgroundLoaded: Promise<void>;
+	xp: BoxExplosion;
 
 	constructor({ level_number = 1 } = {}) {
 		this.level_number = level_number;
@@ -34,6 +36,7 @@ export default class Level {
 		this.objects = [];
 
 		this.player = new Player();
+		this.xp = new BoxExplosion({ position: { x: 300, y: 400 } });
 
 		this.init();
 	}
@@ -72,6 +75,8 @@ export default class Level {
 			}
 		});
 
+
+
 		// Player init
 		this.player.position = levels[this.level_number].player_position;
 		this.player.collision_blocks = this.collision_blocks;
@@ -107,8 +112,11 @@ export default class Level {
 		this.objects.forEach((obj) => obj.render(context));
 		this.objects = this.objects.filter(obj => !obj.marked_for_deletion);
 
+		this.xp.render(context);
+
 		// Render player
 		this.player.render(context);
+		
 		context.restore();
 	}
 }

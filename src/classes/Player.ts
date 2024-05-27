@@ -380,7 +380,7 @@ export default class Player {
 
 		this.sprite.draw(context);
 		//this.draw_hitbox(context);
-		this.draw_hit_radius(context);
+		//this.draw_hit_radius(context);
 	}
 
 	render(
