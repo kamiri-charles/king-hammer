@@ -7,7 +7,7 @@ export default class BoxExplosion {
 	collision_blocks: Block[];
 	marked_for_deletion: boolean;
 
-	constructor({ position = { x: 0, y: 0 }, collision_blocks = [] } = {}) {
+	constructor({ position = { x: 0, y: 0 }, collision_blocks = [] as Block[] } = {}) {
 		this.position = position;
 		this.shrapnel_count = 10;
 		this.collision_blocks = collision_blocks;
@@ -60,7 +60,7 @@ class BoxShrapnel {
 	constructor({
 		position = { x: 0, y: 0 },
 		image_src = "assets/spritesheets/box/BoxPieces1.png",
-		collision_blocks = [],
+		collision_blocks = [] as Block[],
 	} = {}) {
 		this.position = position;
 		this.image_src = image_src;

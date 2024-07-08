@@ -80,7 +80,10 @@ export default class Level {
 		// Player init
 		this.player.position = levels[this.level_number].player_position;
 		this.player.collision_blocks = this.collision_blocks;
-		this.player.boxes = this.objects.filter(obj => obj.type == 'box');
+		this.player.boxes = this.objects.filter(
+			(obj): obj is Box => obj.type === "box"
+		);
+
 
 		
 	}
@@ -110,7 +113,6 @@ export default class Level {
 
 		// Render objects
 		this.objects.forEach((obj) => obj.render(context));
-		//this.objects = this.objects.filter(obj => !obj.marked_for_deletion);
 
 		// If a box has been destroyed, create an explosion effect and remove the box
 		this.objects.forEach((obj) => {

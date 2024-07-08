@@ -1,15 +1,21 @@
 {
-  "name": "king-hammer",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0"
-  }
+	"name": "king-hammer",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d dist"
+	},
+	"devDependencies": {
+		"gh-pages": "^6.1.1",
+		"typescript": "^5.2.2",
+		"vite": "^5.2.0"
+	},
+	"dependencies": {
+		"@vitejs/plugin-react": "^4.3.1"
+	}
 }
