@@ -289,7 +289,7 @@ export default class Player {
 	}
 
 	attack() {
-		if (!this.attacking) this.attacking = true;
+		if (!this.attacking && !this.jumping) this.attacking = true;
 	}
 
 	update_hitbox() {

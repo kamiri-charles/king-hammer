@@ -29,7 +29,7 @@ export default class Controller {
 					break;
 
 				case "a":
-					this.left = true;
+					this.left = true;					
 					break;
 
 				case "d":
