@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	canvas.width = game_variables.GAME_WIDTH;
 	canvas.height = game_variables.GAME_HEIGHT;
 
+	const game = new Game();
+
 	// Function to draw the main menu
 	const drawMainMenu = () => {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -49,8 +51,25 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 			});
 		});
-	};
 
-	const game = new Game();
-	//game.run(ctx);
+		// Click event listener
+		canvas.addEventListener("click", (event) => {
+			const x = event.offsetX;
+			const y = event.offsetY;
+
+			// Check if the mouse is over any option and start the game if it is
+			menu_data.forEach((option) => {
+				if (
+					x >= option.x &&
+					x <= option.x + 200 &&
+					y >= option.y &&
+					y <= option.y + 50
+				) {
+					if (option.name == "New Game") {
+						game.run(ctx);
+					}
+				}
+			});
+		});
+	};
 });
