@@ -6,19 +6,21 @@ export default class Game {
 	started: boolean;
 	paused: boolean;
 
-	constructor({level_number = 1} = {}) {
+	constructor({ level_number = 1 } = {}) {
 		this.level_number = level_number;
 		this.level = new Level({ level_number: level_number });
 
 		this.started = false;
 		this.paused = false;
 
+
+		this.init();
 	}
 
-	init() {}
+	init() {		
+	}
 
 	run(context: CanvasRenderingContext2D) {
-
 		// Add event listener for pause
 		document.addEventListener("keydown", (e) => {
 			// Escape key
@@ -26,21 +28,13 @@ export default class Game {
 				this.paused = !this.paused;
 			}
 		});
-		
-		
+
 		// Main loop
 		const loop = () => {
 			this.level.load(context);
-
-			if (this.paused) {
-				console.log("Paused");
-				
-			}
-			
 			requestAnimationFrame(loop);
-		}
+		};
 
 		loop();
-
 	}
 }

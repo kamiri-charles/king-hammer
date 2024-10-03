@@ -3,6 +3,7 @@ import { game_variables } from "./config/settings";
 import Game from "./game";
 import { menu_data } from "./data/main_menu";
 
+
 document.addEventListener("DOMContentLoaded", () => {
 	const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 	const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -11,8 +12,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	const game = new Game();
 
+	game.run(ctx);
+
+	
+	
+
 	// Function to draw the main menu
-	const drawMainMenu = () => {
+	/* const drawMainMenu = () => {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(mainMenu, 0, 0);
 
@@ -22,10 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			ctx.fillRect(option.x, option.y, 200, 50);
 			ctx.fillStyle = "black";
 		});
-	};
+	}; */
 
 	// Load and draw the main menu background image
-	const mainMenu = new Image();
+	/* const mainMenu = new Image();
 	mainMenu.src = "assets/backgrounds/MainMenu.png";
 	mainMenu.onload = () => {
 		drawMainMenu();
@@ -71,5 +77,5 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 			});
 		});
-	};
+	}; */
 });

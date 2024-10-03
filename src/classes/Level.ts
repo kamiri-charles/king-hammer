@@ -85,6 +85,9 @@ export default class Level {
 		);
 
 
+		console.log(this.objects[Math.floor(Math.random() * this.objects.length)]);
+		
+
 		
 	}
 
@@ -113,6 +116,8 @@ export default class Level {
 
 		// Render objects
 		this.objects.forEach((obj) => obj.render(context));
+
+		
 
 		// If a box has been destroyed, create an explosion effect and remove the box
 		this.objects.forEach((obj) => {
