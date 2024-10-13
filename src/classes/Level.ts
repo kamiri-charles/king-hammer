@@ -7,6 +7,7 @@ import Block from "../primitives/Block";
 import Door from "../objects/Door";
 import Box from "../objects/Box";
 import Player from "./Player";
+import Enemy from "./Enemy";
 
 export default class Level {
 	level_number: number;
@@ -17,6 +18,7 @@ export default class Level {
 	effects: BoxExplosion[];
 	player: Player;
 	backgroundLoaded: Promise<void>;
+	test_pig: Enemy;
 
 	constructor({ level_number = 1 } = {}) {
 		this.level_number = level_number;
@@ -38,6 +40,7 @@ export default class Level {
 
 		this.player = new Player();
 
+		this.test_pig = new Enemy();
 		this.init();
 	}
 
@@ -84,11 +87,14 @@ export default class Level {
 			(obj): obj is Box => obj.type === "box"
 		);
 
+		// Test pig init
+		this.test_pig.position.x = 100;
+		this.test_pig.position.y = 200;
+		this.test_pig.collision_blocks = this.collision_blocks;
+		this.test_pig.boxes = this.objects.filter(
+			(obj): obj is Box => obj.type === "box"
+		);
 
-		console.log(this.objects[Math.floor(Math.random() * this.objects.length)]);
-		
-
-		
 	}
 
 	async load(context: CanvasRenderingContext2D) {
@@ -136,6 +142,7 @@ export default class Level {
 
 		// Render player
 		this.player.render(context);
+		this.test_pig.render(context);
 		
 		context.restore();
 	}

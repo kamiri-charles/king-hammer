@@ -47,7 +47,7 @@ export default class Enemy {
 			position: { x: this.position.x, y: this.position.y },
 			width: this.width,
 			height: this.height,
-			image_src: "assets/spritesheets/player/IdleRight.png",
+			image_src: "assets/spritesheets/pig/IdleLeft.png",
 		});
 
 		this.hitbox = {
@@ -356,7 +356,7 @@ export default class Enemy {
 		);
 
 		this.sprite.draw(context);
-		//this.draw_hitbox(context);
+		this.draw_hitbox(context);
 		//this.draw_hit_radius(context);
 	}
 

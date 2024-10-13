@@ -1,7 +1,6 @@
 import "./style.css";
 import { game_variables } from "./config/settings";
 import Game from "./game";
-import { menu_data } from "./data/main_menu";
 
 
 document.addEventListener("DOMContentLoaded", () => {
