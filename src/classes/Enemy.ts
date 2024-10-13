@@ -2,9 +2,7 @@ import { game_variables } from "../config/settings";
 import { player_animations } from "../config/animations";
 import Sprite from "../primitives/Sprite";
 import Block from "../primitives/Block";
-import Controller from "./Controller";
 import Box from "../objects/Box";
-import Camera from "./Camera";
 
 export default class Enemy {
 	position: { x: number; y: number };
@@ -22,9 +20,7 @@ export default class Enemy {
 	boxes: Box[];
 	animations: any;
 	state: string;
-	controller: Controller;
 	current_animation: any;
-	camera: Camera;
 	hit_radius_scale: number;
 	hit_radius: {
 		position: { x: number; y: number };
@@ -77,9 +73,6 @@ export default class Enemy {
 		this.animations = player_animations;
 		this.init_animations();
 		this.state = state;
-
-		this.controller = new Controller(this);
-		this.camera = new Camera(this);
 	}
 
 	init_animations() {
@@ -120,33 +113,6 @@ export default class Enemy {
 			this.jumps = 0;
 			this.jumping = false;
 		}
-	}
-
-	handle_movement() {
-		this.position.x += this.velocity.x;
-		this.update_hitbox();
-		this.handle_horizontal_collision();
-
-		if (!this.attacking) {
-			if (this.controller.left) {
-				this.velocity.x = -this.speed;
-				this.switch_state("run_left");
-			} else if (this.controller.right) {
-				this.velocity.x = this.speed;
-				this.switch_state("run_right");
-			} else {
-				this.velocity.x = 0;
-
-				if (!this.jumping && !this.falling && !this.attacking) {
-					if (this.state.includes("left")) this.switch_state("idle_left");
-					else this.switch_state("idle_right");
-				}
-			}
-		}
-
-		this.handle_gravity();
-		this.update_hitbox();
-		this.handle_vertical_collision();
 	}
 
 	handle_horizontal_collision() {
@@ -320,8 +286,6 @@ export default class Enemy {
 	}
 
 	update() {
-		this.handle_movement();
-
 		if (this.state.includes("left")) {
 			this.sprite.update(this.position.x - 15, this.position.y);
 		} else {
@@ -402,6 +366,5 @@ export default class Enemy {
 	) {
 		this.update();
 		this.draw(context, { fill, outline });
-		this.camera.update();
 	}
 }
