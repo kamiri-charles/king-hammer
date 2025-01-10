@@ -67,3 +67,5 @@ export const player_animations = {
 		loop: false,
 	},
 };
+
+

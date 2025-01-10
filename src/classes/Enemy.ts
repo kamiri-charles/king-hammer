@@ -34,8 +34,8 @@ export default class Enemy {
 		boxes = [],
 	} = {}) {
 		this.position = position;
-		this.width = 78;
-		this.height = 58;
+		this.width = 34;
+		this.height = 28;
 		this.velocity = { x: 0, y: 0 };
 		this.speed = 4;
 		this.attacking = false;
@@ -286,6 +286,7 @@ export default class Enemy {
 	}
 
 	update() {
+		// this.handle_gravity();
 		if (this.state.includes("left")) {
 			this.sprite.update(this.position.x - 15, this.position.y);
 		} else {

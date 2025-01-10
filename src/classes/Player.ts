@@ -35,7 +35,7 @@ export default class Player {
 		boxes = [],
 	} = {}) {
 		this.position = position;
-		this.width = 78;
+		this.width = 78; // TODO: Find a better way of calculating this based on the image dimensions
 		this.height = 58;
 		this.velocity = { x: 0, y: 0 };
 		this.speed = 4;

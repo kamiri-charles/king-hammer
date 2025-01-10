@@ -89,7 +89,7 @@ export default class Level {
 
 		// Test pig init
 		this.test_pig.position.x = 100;
-		this.test_pig.position.y = 200;
+		this.test_pig.position.y = 400;
 		this.test_pig.collision_blocks = this.collision_blocks;
 		this.test_pig.boxes = this.objects.filter(
 			(obj): obj is Box => obj.type === "box"
@@ -142,7 +142,7 @@ export default class Level {
 
 		// Render player
 		this.player.render(context);
-		this.test_pig.render(context);
+		this.test_pig.render(context, {fill: "rgba(255, 255, 255, 0)"});
 		
 		context.restore();
 	}
